@@ -51,7 +51,8 @@ class _EanGeneratorProto:
     eanValue:str = None
     barcodeValue:str = None
     _renderer:BarcodeRendering = None
-    listIndexMeta: list= []
+    indexFistText:int
+    indexSecondText:int
 
     def __init__(self):
         pass
@@ -60,7 +61,7 @@ class _EanGeneratorProto:
         pass
 
     def showBarcode(self):
-        self._renderer.renderInWindow(self.eanValue, self.barcodeValue,self.listIndexMeta)
+        self._renderer.renderInWindow(self.eanValue, self.barcodeValue,self.indexFistText, self.indexSecondText)
 
 
 class Ean13Generator(_EanGeneratorProto):
@@ -72,8 +73,9 @@ class Ean13Generator(_EanGeneratorProto):
         if isCorrectEan(value, EanType.EAN13):
             self.eanValue = value
             self._calculateBareCodeValue()
-            self._renderer = BarcodeRendering()
-            self.listIndexMeta = [0,1,2,45,46,47,48,49,92,93,94]
+            self._renderer = BarcodeRendering([0,1,2,45,46,47,48,49,92,93,94])
+            self.indexFistText = 24
+            self.indexSecondText = 71
 
         else:
             raise Exception("Invalid EAN13")
@@ -150,8 +152,9 @@ class Ean8Generator(_EanGeneratorProto):
         if isCorrectEan(value, EanType.EAN8):
             self.eanValue = value
             self._calculateBareCodeValue()
-            self._renderer = BarcodeRendering()
-            self.listIndexMeta = [0,1,2,31,32,33,34,35,64,65,66]
+            self._renderer = BarcodeRendering([0,1,2,31,32,33,34,35,64,65,66])
+            self.indexFistText = 17
+            self.indexSecondText = 50
 
         else:
             raise Exception("Invalid EAN8")
