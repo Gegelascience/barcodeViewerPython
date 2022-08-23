@@ -51,6 +51,7 @@ class _EanGeneratorProto:
     eanValue:str = None
     barcodeValue:str = None
     _renderer:BarcodeRendering = None
+    listIndexMeta: list= []
 
     def __init__(self):
         pass
@@ -59,13 +60,8 @@ class _EanGeneratorProto:
         pass
 
     def showBarcode(self):
-        self._renderer.renderInWindow(self.eanValue, self.barcodeValue)
+        self._renderer.renderInWindow(self.eanValue, self.barcodeValue,self.listIndexMeta)
 
-    def saveAsSvg(self, filePath):
-        self._renderer.saveAsSvg(filePath, self.barcodeValue)
-
-    def saveAsImg(self, filePath):
-        self._renderer.saveAsImg(filePath, self.barcodeValue)
 
 class Ean13Generator(_EanGeneratorProto):
     '''
@@ -77,6 +73,7 @@ class Ean13Generator(_EanGeneratorProto):
             self.eanValue = value
             self._calculateBareCodeValue()
             self._renderer = BarcodeRendering()
+            self.listIndexMeta = [0,1,2,45,46,47,48,49,92,93,94]
 
         else:
             raise Exception("Invalid EAN13")
@@ -154,6 +151,7 @@ class Ean8Generator(_EanGeneratorProto):
             self.eanValue = value
             self._calculateBareCodeValue()
             self._renderer = BarcodeRendering()
+            self.listIndexMeta = [0,1,2,31,32,33,34,35,64,65,66]
 
         else:
             raise Exception("Invalid EAN8")
