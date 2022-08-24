@@ -1,7 +1,3 @@
-from EanCheckHelper import isCorrectEan, EanType, calculateDigitCheck
-
-
-
 from EanGenerator import Ean8Generator, Ean13Generator
 
 # ean 13

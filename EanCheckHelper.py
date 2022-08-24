@@ -1,5 +1,7 @@
 from enum import Enum
 
+from EanException import InvalidCheckDigit, InvalidEanCharacter
+
 class EanType(Enum):
     EAN8 = 8
     EAN13 = 13
@@ -33,14 +35,14 @@ def isCorrectEan(possibleEan:str, eanTypeToCheck:EanType=None)-> bool:
 
     # check regex
     if not (possibleEan.isnumeric() and int(possibleEan) > 0):
-        return False
+        raise InvalidEanCharacter()
 
 
     # control digit check
     eanDigitLess = possibleEan[0:testLen-1]
     possibleDigitCheck = possibleEan[testLen-1]
     if not possibleDigitCheck == calculateDigitCheck(eanDigitLess):
-        return False
+         raise InvalidCheckDigit(possibleDigitCheck)
             
     return True
 
@@ -55,7 +57,7 @@ def calculateDigitCheck(eanDigitCheckLess:str) -> str:
 
     # check regex
     if not (eanDigitCheckLess.isnumeric() and int(eanDigitCheckLess) >0):
-        return "KO"
+        raise InvalidEanCharacter()
 
     for index in range(lenstrCalcul-1,-1,-1):
         somme += int(eanDigitCheckLess[index]) * factor
