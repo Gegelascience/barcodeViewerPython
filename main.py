@@ -1,10 +1,12 @@
 from EanGenerator import Ean8Generator, Ean13Generator
 
+
 # ean 13
-testBareCode = Ean13Generator("3666154117284")
+testBareCode13 = Ean13Generator("3666154117284")
 
+print("ean8")
 # ean 8
-#testBareCode = Ean8Generator("12345670")
+testBareCode8 = Ean8Generator("12345670")
 
 
-testBareCode.showBarcode()
+testBareCode8.showBarcode()
