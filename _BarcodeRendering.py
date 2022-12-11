@@ -3,6 +3,9 @@ from math import trunc
 import tkinter as tk
 from tkinter import Canvas
 
+from xml.etree import ElementTree as ET
+
+
 class BarcodeRendering:
     '''
     Class to render barcode in different ways
@@ -20,7 +23,35 @@ class BarcodeRendering:
         self.listIndexMeta =listIndex
 
     
-    def renderInWindow(self, eanValue:str, barcodeValue:str, indexFirstPart:int, indexSecondPart:int):
+    def saveAsSvg(self,filePath, barcodeValue:str):
+        '''
+        save barcode to svg file
+        filePath: path to saved svg file
+        '''
+        initialStr = '''
+        <svg version='1.1' baseProfile='full' width='700' height='200' xmlns='http://www.w3.org/2000/svg'>
+        </svg>'''
+        root = ET.XML(initialStr)
+        barcodeZone = ET.SubElement(root,"g")
+        barcodeZone.set("stroke", self.color)
+        index = 10
+        for el in barcodeValue:
+            if el == "1":
+                line = ET.SubElement(barcodeZone,"line")
+                line.set("stroke-width",str(self.width))
+                line.set("y1",str(10))
+                line.set("x1",str(index))
+                line.set("y2",str(10 + self.height))
+                line.set("x2",str(index))
+            index = index + self.width
+
+        tree = ET.ElementTree(root)
+        ET.register_namespace("","http://www.w3.org/2000/svg")
+
+        tree.write(filePath, encoding="utf-8",xml_declaration=True)
+
+    
+    def renderInWindow(self, eanValue:str, barcodeValue:str):
         '''
         Render barcode on tkinter window
         '''

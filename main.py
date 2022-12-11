@@ -10,3 +10,4 @@ testBareCode8 = Ean8Generator("12345670")
 
 
 testBareCode8.showBarcode()
+testBareCode8.saveBarcodeAsSvg("./test.svg")
