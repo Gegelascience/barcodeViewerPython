@@ -4,6 +4,25 @@ import tkinter as tk
 from tkinter import Canvas
 
 from xml.etree import ElementTree as ET
+import zlib
+import struct
+
+class PngChunkBuilder:
+
+	def __init__(self,chunkName:str,data:bytes):
+		self.__chunkType = chunkName.encode("ascii")
+		if chunkName != "IEND":
+			self.__chunkData = data
+			self.__chunkDataLen = struct.pack('>I', len(data))
+			if chunkName =="PLTE" and len(data)%3 !=0:
+				raise Exception("invalid palette data")
+		else:
+			self.__chunkData= "".encode()
+			self.__chunkDataLen =struct.pack('>I', 0)
+		self.__chunkCRC = struct.pack('>I', zlib.crc32(self.__chunkData, zlib.crc32(struct.pack('>4s', self.__chunkType))))
+
+	def getBytesContent(self):
+		return b"".join([self.__chunkDataLen,self.__chunkType, self.__chunkData, self.__chunkCRC])
 
 
 class BarcodeRendering:
@@ -23,7 +42,7 @@ class BarcodeRendering:
         self.listIndexMeta =listIndex
 
     
-    def saveAsSvg(self,filePath, barcodeValue:str):
+    def saveAsSvg(self,filePath:str, barcodeValue:str):
         '''
         save barcode to svg file
         filePath: path to saved svg file
@@ -49,6 +68,65 @@ class BarcodeRendering:
         ET.register_namespace("","http://www.w3.org/2000/svg")
 
         tree.write(filePath, encoding="utf-8",xml_declaration=True)
+
+    def saveAsPng(self,filepath:str,barcodeValue:str):
+        # magic number
+        magicNumber = struct.pack('>BBBBBBBB', 137, 80, 78, 71, 13, 10, 26,10)
+        # grayscale
+        colorType =0
+        IDHRChunk = PngChunkBuilder("IHDR",struct.pack('>IIBBBBB', self.width*len(barcodeValue) + 20, self.height+10, 8, colorType, 0, 0, 0))
+
+
+
+        dataPng = []
+        for i in range(0,5):
+            datarow = []
+            datarow.extend((self.width*len(barcodeValue) + 20)*[255])
+            dataPng.append(datarow)
+
+        for i in range(0,self.height):
+            datarow = []
+            datarow.extend(10*[255])
+            for value in barcodeValue:
+                 if value =="1":
+                      datarow.extend(self.width*[0])
+                 else:
+                      datarow.extend(self.width*[255])
+
+            datarow.extend(10*[255])
+            dataPng.append(datarow)
+
+        for i in range(0,5):
+            datarow = []
+            datarow.extend((self.width*len(barcodeValue) + 20)*[255])
+            dataPng.append(datarow)
+
+        # ecriture des pixels
+        
+        image = []
+        for ligne in dataPng:
+            image.append(struct.pack('>B', 0))
+            ligneInt = []
+            for pixel in ligne:
+                ligneInt.append(struct.pack('>B', pixel))
+            image.extend(ligneInt)
+
+        image_compressee = zlib.compress(b"".join(image))
+
+        IDATChunk = PngChunkBuilder("IDAT",image_compressee)
+
+        IENDChunk=PngChunkBuilder("IEND",b"")
+
+        byteContentList: list[bytes] = []
+        byteContentList.append(magicNumber)
+        byteContentList.append(IDHRChunk.getBytesContent())
+        byteContentList.append(IDATChunk.getBytesContent())
+        byteContentList.append(IENDChunk.getBytesContent())
+
+        fileContent = b"".join(byteContentList)
+        with open(filepath,"wb") as pngFile:
+            pngFile.write(fileContent)
+
 
     
     def renderInWindow(self, eanValue:str, barcodeValue:str):

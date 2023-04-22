@@ -15,16 +15,25 @@ if __name__ == '__main__':
 
             if len(possibleEan) == 13:
                 # ean 13
-                testBareCode13 = Ean13Generator("3666154117284")
+                # valeur de test: 3666154117284
+                testBareCode13 = Ean13Generator(possibleEan)
                 testBareCode13.saveBarcodeAsSvg("./test13.svg")
+                testBareCode13.saveBarcodeAsPng("./test13.png")
                 testBareCode13.showBarcode()
+                
 
-            else:
+            elif len(possibleEan) == 8:
 
                 # ean 8
-                testBareCode8 = Ean8Generator("12345670")
+                # valeur de test: 12345670
+                testBareCode8 = Ean8Generator(possibleEan)
                 testBareCode8.saveBarcodeAsSvg("./test8.svg")
+                testBareCode8.saveBarcodeAsPng("./test8.png")
                 testBareCode8.showBarcode()
 
-        except:
+            else:
+                raise("Invalid EAN size")
+
+        except Exception as e:
+            print(e)
             sys.exit(1)
