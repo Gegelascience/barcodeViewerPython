@@ -37,3 +37,6 @@ if __name__ == '__main__':
         except Exception as e:
             print(e)
             sys.exit(1)
+
+    else:
+        print("No ean given")
