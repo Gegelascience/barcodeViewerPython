@@ -1,6 +1,6 @@
 from EanGenerator import Ean8Generator, Ean13Generator
 import sys
-
+from MainView import InputUI
 
 
 if __name__ == '__main__':
@@ -40,3 +40,6 @@ if __name__ == '__main__':
 
     else:
         print("No ean given")
+        defaultApp = InputUI()
+        defaultApp.mainloop()
+        
