@@ -12,6 +12,6 @@ To test
 
 ```bash
 
-    python testCheckEan.py
+    python -m unittest discover -v
 
 ```
