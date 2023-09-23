@@ -67,7 +67,7 @@ class _EanGeneratorProto:
         self._renderer.saveAsSvg(filePath, self.barcodeValue)
 
     def saveBarcodeAsPng(self, filePath):
-        self._renderer.saveAsPng(filePath, self.barcodeValue)
+        self._renderer.saveAsPng(filePath, self.barcodeValue, self.eanValue)
 
 
 class Ean13Generator(_EanGeneratorProto):

@@ -71,12 +71,12 @@ class BarcodeRendering:
 
         tree.write(filePath, encoding="utf-8",xml_declaration=True)
 
-    def saveAsPng(self,filepath:str,barcodeValue:str):
+    def saveAsPng(self,filepath:str,barcodeValue:str, eanValue:str):
         # magic number
         magicNumber = struct.pack('>BBBBBBBB', 137, 80, 78, 71, 13, 10, 26,10)
         # grayscale
         colorType =0
-        IDHRChunk = PngChunkBuilder("IHDR",struct.pack('>IIBBBBB', self.width*len(barcodeValue) + 20, self.height+20, 8, colorType, 0, 0, 0))
+        IDHRChunk = PngChunkBuilder("IHDR",struct.pack('>IIBBBBB', self.width*len(barcodeValue) + 20, self.height+25, 8, colorType, 0, 0, 0))
 
 
 
@@ -86,35 +86,45 @@ class BarcodeRendering:
             datarow.extend((self.width*len(barcodeValue) + 20)*[255])
             dataPng.append(datarow)
 
-        for i in range(0,self.height):
+        for i in range(0,self.height + 20):
             datarow = []
             datarow.extend(10*[255])
-            for value in barcodeValue:
-                 if value =="1":
-                      datarow.extend(self.width*[0])
-                 else:
-                      datarow.extend(self.width*[255])
+            for index,value in enumerate(barcodeValue):
+                if value =="1" and (i < self.height or (index in self.listIndexMeta and i < self.height +15)):
+                    datarow.extend(self.width*[0])
+                else:
+                    datarow.extend(self.width*[255])
 
             datarow.extend(10*[255])
             dataPng.append(datarow)
 
-        for i in range(0,15):
-            datarow = []
-            datarow.extend((self.width*len(barcodeValue) + 20)*[255])
-            dataPng.append(datarow)
 
-        numberRenderer.drawNumber(dataPng,(self.height+12,5),"0")
-        numberRenderer.drawNumber(dataPng,(self.height+12,10),"1")
-        numberRenderer.drawNumber(dataPng,(self.height+12,15),"2")
-        numberRenderer.drawNumber(dataPng,(self.height+12,20),"3")
-        numberRenderer.drawNumber(dataPng,(self.height+12,25),"4")
-        numberRenderer.drawNumber(dataPng,(self.height+12,30),"5")
-        numberRenderer.drawNumber(dataPng,(self.height+12,35),"6")
-        numberRenderer.drawNumber(dataPng,(self.height+12,40),"7")
-        numberRenderer.drawNumber(dataPng,(self.height+12,45),"8")
-        numberRenderer.drawNumber(dataPng,(self.height+12,50),"9")
+        lineNumber = self.height +10
+        if len(eanValue) ==13:
+            decalagePart1 = 1
+            decalagePart2 = 7
 
-        
+            numberRenderer.drawNumber(dataPng,(lineNumber,3),eanValue[0])
+        else:
+            decalagePart1 = 0
+            decalagePart2 = 4
+
+             
+        for i in range(10, len(dataPng[lineNumber])):
+             for index in range(0, len(barcodeValue)):
+
+                if index > 2 and index < self.listIndexMeta[3]:
+                        iref = index - 2
+                        if iref%7 == 3:
+                            textValue=trunc(iref/7)
+                            numberRenderer.drawNumber(dataPng,(lineNumber,10+ (index+1)*self.width),eanValue[textValue + decalagePart1])
+
+                elif index > self.listIndexMeta[7] and index< self.listIndexMeta[8]:
+                    iref = index - self.listIndexMeta[7]
+                    if iref%7 == 3:
+                        textValue=trunc(iref/7)
+                        numberRenderer.drawNumber(dataPng,(lineNumber,10+ (index+1)*self.width),eanValue[textValue + decalagePart2])
+                            
 
         # ecriture des pixels
         
