@@ -7,6 +7,8 @@ from xml.etree import ElementTree as ET
 import zlib
 import struct
 
+import numberRenderer
+
 class PngChunkBuilder:
 
 	def __init__(self,chunkName:str,data:bytes):
@@ -74,7 +76,7 @@ class BarcodeRendering:
         magicNumber = struct.pack('>BBBBBBBB', 137, 80, 78, 71, 13, 10, 26,10)
         # grayscale
         colorType =0
-        IDHRChunk = PngChunkBuilder("IHDR",struct.pack('>IIBBBBB', self.width*len(barcodeValue) + 20, self.height+10, 8, colorType, 0, 0, 0))
+        IDHRChunk = PngChunkBuilder("IHDR",struct.pack('>IIBBBBB', self.width*len(barcodeValue) + 20, self.height+20, 8, colorType, 0, 0, 0))
 
 
 
@@ -96,10 +98,23 @@ class BarcodeRendering:
             datarow.extend(10*[255])
             dataPng.append(datarow)
 
-        for i in range(0,5):
+        for i in range(0,15):
             datarow = []
             datarow.extend((self.width*len(barcodeValue) + 20)*[255])
             dataPng.append(datarow)
+
+        numberRenderer.drawNumber(dataPng,(self.height+12,5),"0")
+        numberRenderer.drawNumber(dataPng,(self.height+12,10),"1")
+        numberRenderer.drawNumber(dataPng,(self.height+12,15),"2")
+        numberRenderer.drawNumber(dataPng,(self.height+12,20),"3")
+        numberRenderer.drawNumber(dataPng,(self.height+12,25),"4")
+        numberRenderer.drawNumber(dataPng,(self.height+12,30),"5")
+        numberRenderer.drawNumber(dataPng,(self.height+12,35),"6")
+        numberRenderer.drawNumber(dataPng,(self.height+12,40),"7")
+        numberRenderer.drawNumber(dataPng,(self.height+12,45),"8")
+        numberRenderer.drawNumber(dataPng,(self.height+12,50),"9")
+
+        
 
         # ecriture des pixels
         

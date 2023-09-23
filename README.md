@@ -4,7 +4,7 @@
 
 ```bash
 
-    python main.py <yourEAN>
+    python main.py --ean <yourEAN>
 
 ```
 
