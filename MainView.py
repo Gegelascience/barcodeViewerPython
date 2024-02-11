@@ -44,4 +44,4 @@ class InputUI(tk.Tk):
             testBareCode8.showBarcode()
 
         else:
-            raise("Invalid EAN size")
+            raise Exception("Invalid EAN size")
