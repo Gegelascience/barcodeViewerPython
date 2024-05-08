@@ -22,7 +22,7 @@ command details
 
 ```bash
 
-    python mainView.py
+    python MainView.py
 
 ```
 
