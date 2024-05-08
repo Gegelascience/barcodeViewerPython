@@ -60,14 +60,17 @@ class _EanGeneratorProto:
     def _calculateBareCodeValue(self):
         pass
 
-    def showBarcode(self):
-        self._renderer.renderInWindow(self.eanValue, self.barcodeValue)
+    def showBarcodeOnTerminal(self):
+        self._renderer.showOnTerminal(self.barcodeValue)
+
+    def showBarcodeUI(self):
+        self._renderer.renderInWindow(self.barcodeValue)
 
     def saveBarcodeAsSvg(self, filePath):
         self._renderer.saveAsSvg(filePath, self.barcodeValue)
 
     def saveBarcodeAsPng(self, filePath):
-        self._renderer.saveAsPng(filePath, self.barcodeValue, self.eanValue)
+        self._renderer.saveAsPng(filePath, self.barcodeValue)
 
 
 class Ean13Generator(_EanGeneratorProto):
@@ -79,7 +82,7 @@ class Ean13Generator(_EanGeneratorProto):
         if isCorrectEan(value, EanType.EAN13):
             self.eanValue = value
             self._calculateBareCodeValue()
-            self._renderer = BarcodeRendering([0,1,2,45,46,47,48,49,92,93,94])
+            self._renderer = BarcodeRendering([0,1,2,45,46,47,48,49,92,93,94],self.eanValue)
             self.indexFistText = 24
             self.indexSecondText = 71
 
@@ -158,7 +161,7 @@ class Ean8Generator(_EanGeneratorProto):
         if isCorrectEan(value, EanType.EAN8):
             self.eanValue = value
             self._calculateBareCodeValue()
-            self._renderer = BarcodeRendering([0,1,2,31,32,33,34,35,64,65,66])
+            self._renderer = BarcodeRendering([0,1,2,31,32,33,34,35,64,65,66],self.eanValue)
             self.indexFistText = 17
             self.indexSecondText = 50
 

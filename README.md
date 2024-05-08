@@ -2,13 +2,31 @@
 
 ## Running
 
+### CLI
+
 ```bash
 
     python main.py --ean <yourEAN>
 
 ```
 
-To test
+command details
+
+```bash
+
+    python main.py --help
+
+```
+
+### UI
+
+```bash
+
+    python mainView.py
+
+```
+
+### To test
 
 ```bash
 

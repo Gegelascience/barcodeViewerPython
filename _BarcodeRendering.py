@@ -36,13 +36,24 @@ class BarcodeRendering:
     color:str = "black"
     emptyInit:int =  30
     listIndexMeta = []
+    eanValue:str
 
-    def __init__(self, listIndex:list, width:int=4, height:int = 40, color:str="black"):
+    def __init__(self, listIndex:list,eanValue:str, width:int=4, height:int = 40, color:str="black"):
         self.width = width
         self.color = color
         self.height = height
         self.listIndexMeta =listIndex
+        self.eanValue = eanValue
 
+    def showOnTerminal(self,barcodeValue:str):
+        for i in range(5):
+            line = ""
+            for el in barcodeValue:
+                if el == "1":
+                    line += "#"
+                else:
+                    line += " "
+            print(line)
     
     def saveAsSvg(self,filePath:str, barcodeValue:str):
         '''
@@ -71,7 +82,7 @@ class BarcodeRendering:
 
         tree.write(filePath, encoding="utf-8",xml_declaration=True)
 
-    def saveAsPng(self,filepath:str,barcodeValue:str, eanValue:str):
+    def saveAsPng(self,filepath:str,barcodeValue:str):
         # magic number
         magicNumber = struct.pack('>BBBBBBBB', 137, 80, 78, 71, 13, 10, 26,10)
         # grayscale
@@ -100,11 +111,11 @@ class BarcodeRendering:
 
 
         lineNumber = self.height +10
-        if len(eanValue) ==13:
+        if len(self.eanValue) ==13:
             decalagePart1 = 1
             decalagePart2 = 7
 
-            numberRenderer.drawNumber(dataPng,(lineNumber,3),eanValue[0])
+            numberRenderer.drawNumber(dataPng,(lineNumber,3),self.eanValue[0])
         else:
             decalagePart1 = 0
             decalagePart2 = 4
@@ -117,13 +128,13 @@ class BarcodeRendering:
                         iref = index - 2
                         if iref%7 == 3:
                             textValue=trunc(iref/7)
-                            numberRenderer.drawNumber(dataPng,(lineNumber,10+ (index+1)*self.width),eanValue[textValue + decalagePart1])
+                            numberRenderer.drawNumber(dataPng,(lineNumber,10+ (index+1)*self.width),self.eanValue[textValue + decalagePart1])
 
                 elif index > self.listIndexMeta[7] and index< self.listIndexMeta[8]:
                     iref = index - self.listIndexMeta[7]
                     if iref%7 == 3:
                         textValue=trunc(iref/7)
-                        numberRenderer.drawNumber(dataPng,(lineNumber,10+ (index+1)*self.width),eanValue[textValue + decalagePart2])
+                        numberRenderer.drawNumber(dataPng,(lineNumber,10+ (index+1)*self.width),self.eanValue[textValue + decalagePart2])
                             
 
         # ecriture des pixels
@@ -154,23 +165,23 @@ class BarcodeRendering:
 
 
     
-    def renderInWindow(self, eanValue:str, barcodeValue:str):
+    def renderInWindow(self, barcodeValue:str):
         '''
         Render barcode on tkinter window
         '''
         app = tk.Tk()
-        app.title(eanValue)
+        app.title(self.eanValue)
 
         dimWindow = str(len(barcodeValue)*self.width + self.emptyInit*2) + "x" + str(50 + self.height)
         app.geometry(dimWindow)
         canvas = Canvas(app,width=len(barcodeValue)*self.width+ self.emptyInit*2, background="white")
         canvas.pack()
 
-        if len(eanValue) ==13:
+        if len(self.eanValue) ==13:
             decalagePart1 = 1
             decalagePart2 = 7
 
-            canvas.create_text(self.emptyInit/2, 20 + self.height, text=eanValue[0])
+            canvas.create_text(self.emptyInit/2, 20 + self.height, text=self.eanValue[0])
         else:
             decalagePart1 = 0
             decalagePart2 = 4
@@ -186,12 +197,12 @@ class BarcodeRendering:
                 iref = i - 2
                 if iref%7 == 3:
                     textValue=trunc(iref/7)
-                    canvas.create_text(self.emptyInit+ (i+1)*self.width, 20 + self.height, text=eanValue[textValue + decalagePart1])
+                    canvas.create_text(self.emptyInit+ (i+1)*self.width, 20 + self.height, text=self.eanValue[textValue + decalagePart1])
             elif i > self.listIndexMeta[7] and i< self.listIndexMeta[8]:
                 iref = i - self.listIndexMeta[7]
                 if iref%7 == 3:
                     textValue=trunc(iref/7)
-                    canvas.create_text(self.emptyInit+ (i+1)*self.width, 20 + self.height, text=eanValue[textValue + decalagePart2])
+                    canvas.create_text(self.emptyInit+ (i+1)*self.width, 20 + self.height, text=self.eanValue[textValue + decalagePart2])
 
         app.mainloop()
 

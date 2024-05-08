@@ -29,9 +29,7 @@ class InputUI(tk.Tk):
             # ean 13
             # valeur de test: 3666154117284
             testBareCode13 = Ean13Generator(possibleEan)
-            testBareCode13.saveBarcodeAsSvg("./test13.svg")
-            testBareCode13.saveBarcodeAsPng("./test13.png")
-            testBareCode13.showBarcode()
+            testBareCode13.showBarcodeUI()
                 
 
         elif len(possibleEan) == 8:
@@ -39,9 +37,11 @@ class InputUI(tk.Tk):
             # ean 8
             # valeur de test: 12345670
             testBareCode8 = Ean8Generator(possibleEan)
-            testBareCode8.saveBarcodeAsSvg("./test8.svg")
-            testBareCode8.saveBarcodeAsPng("./test8.png")
-            testBareCode8.showBarcode()
+            testBareCode8.showBarcodeUI()
 
         else:
             raise Exception("Invalid EAN size")
+        
+if __name__ == '__main__':
+    defaultApp = InputUI()
+    defaultApp.mainloop()
