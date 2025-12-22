@@ -43,14 +43,14 @@ setC = {
 }
 
 
-class _EanGeneratorProto:
+class EanGeneratorProto:
     '''
     abstract class for Generate EAN
     '''
 
-    eanValue:str = None
-    barcodeValue:str = None
-    _renderer:BarcodeRendering = None
+    eanValue:str = ""
+    barcodeValue:str = ""
+    _renderer:BarcodeRendering
     indexFistText:int
     indexSecondText:int
 
@@ -66,14 +66,14 @@ class _EanGeneratorProto:
     def showBarcodeUI(self):
         self._renderer.renderInWindow(self.barcodeValue)
 
-    def saveBarcodeAsSvg(self, filePath):
+    def saveBarcodeAsSvg(self, filePath: str):
         self._renderer.saveAsSvg(filePath, self.barcodeValue)
 
-    def saveBarcodeAsPng(self, filePath):
+    def saveBarcodeAsPng(self, filePath: str):
         self._renderer.saveAsPng(filePath, self.barcodeValue)
 
 
-class Ean13Generator(_EanGeneratorProto):
+class Ean13Generator(EanGeneratorProto):
     '''
     Generate EAN 13 barcode
     '''
@@ -115,7 +115,7 @@ class Ean13Generator(_EanGeneratorProto):
 
         self.barcodeValue = self.barcodeValue + "101"
 
-    def __calculateSetFromPrefix(self, prefix:str, index:int) -> str:
+    def __calculateSetFromPrefix(self, prefix:str, index:int) -> str | None:
         '''
         Found odd set (set A) or even set (set B) by prefix value
         '''
@@ -152,7 +152,7 @@ class Ean13Generator(_EanGeneratorProto):
         elif prefix == "9":
             return "A" if index in [3,5] else "B"
 
-class Ean8Generator(_EanGeneratorProto):
+class Ean8Generator(EanGeneratorProto):
     '''
     Generate EAN 8 barcode
     '''

@@ -7,7 +7,7 @@ class EanType(Enum):
     EAN13 = 13
 
 
-def isCorrectEan(possibleEan:str, eanTypeToCheck:EanType=None)-> bool:
+def isCorrectEan(possibleEan:str, eanTypeToCheck:EanType)-> bool:
     '''
     test if an string is ether an EAN 8 or an EAN 13
     possibleEan: string to test

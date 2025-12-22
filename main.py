@@ -1,4 +1,4 @@
-from EanGenerator import Ean8Generator, Ean13Generator, _EanGeneratorProto
+from EanGenerator import Ean8Generator, Ean13Generator, EanGeneratorProto
 import sys
 import argparse
 
@@ -7,7 +7,7 @@ cmdArgParser.add_argument("-e","--ean", help="ean to show as barcode", type=str,
 cmdArgParser.add_argument("-m","--mode", help="mode to render, default 'terminal'", type=str, default="terminal", choices=['terminal','png','svg'])
 cmdArgParser.add_argument("-f","--file", help="file path for file render", type=str)
 
-def showBarcode(eanGenerator:_EanGeneratorProto, mode:str, filePath:str):
+def showBarcode(eanGenerator:EanGeneratorProto, mode:str, filePath:str):
     if mode == "terminal":
         eanGenerator.showBarcodeOnTerminal()
 

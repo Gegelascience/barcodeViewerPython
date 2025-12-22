@@ -4,7 +4,7 @@ class InvalidCheckDigit(Exception):
     """Exception when checkDigit is invalid"""
 
 
-    def __init__(self,wrongDigit:str, message="invalid check digit") -> None:
+    def __init__(self,wrongDigit:str, message:str="invalid check digit") -> None:
         self.message = message
         self.wrongDigit = wrongDigit
         super().__init__(self.message)

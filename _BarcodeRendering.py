@@ -31,14 +31,14 @@ class BarcodeRendering:
     '''
     Class to render barcode in different ways
     '''
-    width:str = 4
-    height:str = 40
+    width:int = 4
+    height:int = 40
     color:str = "black"
     emptyInit:int =  30
     listIndexMeta = []
     eanValue:str
 
-    def __init__(self, listIndex:list,eanValue:str, width:int=4, height:int = 40, color:str="black"):
+    def __init__(self, listIndex:list[int],eanValue:str, width:int=4, height:int = 40, color:str="black"):
         self.width = width
         self.color = color
         self.height = height
@@ -91,14 +91,14 @@ class BarcodeRendering:
 
 
 
-        dataPng = []
+        dataPng: list[list[int]] = []
         for i in range(0,5):
-            datarow = []
+            datarow: list[int] = []
             datarow.extend((self.width*len(barcodeValue) + 20)*[255])
             dataPng.append(datarow)
 
         for i in range(0,self.height + 20):
-            datarow = []
+            datarow: list[int] = []
             datarow.extend(10*[255])
             for index,value in enumerate(barcodeValue):
                 if value =="1" and (i < self.height or (index in self.listIndexMeta and i < self.height +15)):
@@ -139,10 +139,10 @@ class BarcodeRendering:
 
         # ecriture des pixels
         
-        image = []
+        image: list[bytes] = []
         for ligne in dataPng:
             image.append(struct.pack('>B', 0))
-            ligneInt = []
+            ligneInt: list[bytes] = []
             for pixel in ligne:
                 ligneInt.append(struct.pack('>B', pixel))
             image.extend(ligneInt)

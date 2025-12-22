@@ -18,8 +18,9 @@ class TestEanCheckHelper(unittest.TestCase):
             self.assertEqual(InvCDE.exception.wrongDigit,"5")
         with self.assertRaises(InvalidEanCharacter) as InvECE:
             isCorrectEan("36661541172n4")
+            self.assertEqual(str(InvECE), "invalid character on ean")
  
-        self.assertEqual(isCorrectEan(None),False)
+        self.assertEqual(isCorrectEan(""),False)
 
     def test_calculDigitCheck_noerror(self):
         self.assertEqual(calculateDigitCheck("366615411728"),"4")
